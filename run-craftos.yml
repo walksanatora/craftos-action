@@ -1,0 +1,17 @@
+name: "Run Craftos"
+description: "Runs a CraftOS computer"
+inputs:
+  root:
+    description: "root of the computers relative to repository root"
+    required: true
+    default: "."
+  args: 
+    description: "string to pass into the --args of CraftOS"
+    required: false
+    default: ""outputs:
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{inputs.root}}
+    - ${{inputs.args}}
