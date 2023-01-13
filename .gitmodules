@@ -1,0 +1,3 @@
+[submodule "craftos2-rom-CI"]
+	path = craftos2-rom-CI
+	url = git@github.com:walksanatora/craftos2-rom-CI.git
