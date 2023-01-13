@@ -5,13 +5,18 @@ inputs:
     description: "root of the computers relative to repository root"
     required: true
     default: "."
+  timeout:
+    description: "maximum ammount of time for CraftOS to run before erroring"
+    required: true
+    default: "60"
   args: 
     description: "string to pass into the --args of CraftOS"
     required: false
-    default: ""outputs:
+    default: ""
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{inputs.root}}
+    - ${{inputs.timeout}}
     - ${{inputs.args}}

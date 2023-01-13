@@ -1,34 +1,47 @@
-#build rom image
-FROM alpine:3 as rom
-RUN apk add git nodejs
-WORKDIR /
+#image that allows me to avoid having to download things twice
+FROM archlinux:base-devel-20230108.0.116909 as ccpc
+RUN pacman-key --init
+RUN pacman -Sy archlinux-keyring --noconfirm
+RUN pacman -S --needed base-devel git --noconfirm
 
-#build rom
-RUN git clone https://github.com/MCJack123/craftos2-rom/
-WORKDIR /craftos2-rom
-RUN wget https://raw.githubusercontent.com/MCJack123/craftos2/master/resources/packStandaloneROM.js
-RUN node packStandaloneROM.js
+#setup the nobody user directory
+RUN echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN chsh nobody --shell "/bin/bash"
+RUN chown -R root:nobody /root
+RUN chmod -R 770 /root
 
-#build craftos
-FROM alpine:3 as craftos
-RUN apk add git gcc make poco-dev sdl2-dev musl-dev
-WORKDIR /
-RUN git clone --recursive https://github.com/MCJack123/craftos2
-WORKDIR /craftos2
-RUN make -C craftos2-lua linux "-j$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')"
-#COPY --from=rom /craftos2-rom/fs_standalone.cpp /rom.cpp
-#RUN ./configure --without-png\
-#    --without-webp\
-#    --without-hpdf\
-#    --with-txt\
-#    --without-sdl_mixer\
-#    --without-ncurses\
-#    --with-standalone-rom=/rom.cpp
-#RUN make "-j$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')"
-#RUN chmod +x craftos
+#ROM image data
+WORKDIR /root
+RUN pacman -Sw sdl2 sdl2_mixer poco --noconfirm
+RUN git clone https://aur.archlinux.org/craftos-pc-data-git.git
+WORKDIR craftos-pc-data-git
+RUN chown -R nobody:nobody .
+RUN su nobody -c "makepkg -si --noconfirm"
 
-#the actuall CI
-#FROM alpine:3 as main
-#COPY --from=craftos /craftos2/craftos /bin/craftos
-#COPY main.sh /main.sh
-#ENTRYPOINT ["/main.sh"]
+#CraftOS-PC
+WORKDIR /root
+RUN git clone https://aur.archlinux.org/craftos-pc-git.git
+WORKDIR craftos-pc-git
+RUN chown -R nobody:nobody .
+RUN su nobody -c "makepkg -si --noconfirm"
+
+WORKDIR /root
+
+
+FROM archlinux:base-20230108.0.116909 as core
+
+WORKDIR /root
+#Copy packages over
+COPY --from=ccpc /var/cache/pacman/pkg/sdl2-*.zst .
+COPY --from=ccpc /var/cache/pacman/pkg/sdl2_mixer-*.zst .
+COPY --from=ccpc /var/cache/pacman/pkg/poco-*.zst .
+COPY --from=ccpc /root/craftos-pc-git/craftos-pc-git-*.zst .
+COPY --from=ccpc /root/craftos-pc-data-git/craftos-pc-data-git-*.zst .
+
+RUN pacman-key --init
+RUN pacman -Sy archlinux-keyring --noconfirm
+RUN pacman -U * --noconfirm
+
+COPY main.sh /main.sh
+ENTRYPOINT [ "bash", "-c" ]
+CMD ["/main.sh"]
