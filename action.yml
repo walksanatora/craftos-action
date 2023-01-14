@@ -3,10 +3,10 @@ description: "Runs a CraftOS computer as a Headless CI"
 inputs:
   root:
     description: "root of the computers relative to repository root"
-    required: true
+    required: false
     default: "."
   timeout:
-    description: "maximum ammount of time for CraftOS to run before erroring"
+    description: "maximum ammount of time in seconds for CraftOS to run before erroring"
     required: true
     default: "60"
   args: 
