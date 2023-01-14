@@ -41,11 +41,15 @@ COPY --from=ccpc /root/craftos-pc-data-git/craftos-pc-data-git-*.zst .
 
 #install the packages
 RUN pacman-key --init
-RUN pacman -Sy archlinux-keyring --noconfirm
+RUN pacman -Sy archlinux-keyring wget unzip --noconfirm
 RUN pacman -U * --noconfirm
 
 #install the files
 COPY main.sh /main.sh
 RUN rm -rf /usr/share/craftos
-COPY craftos2-rom-CI /usr/share/craftos
+WORKDIR /usr/share/
+RUN wget "https://github.com/walksanatora/craftos2-rom-CI/archive/refs/heads/master.zip"
+RUN unzip "master.zip"
+RUN mv craftos2-rom-CI-master craftos
+WORKDIR /root
 ENTRYPOINT ["/main.sh"]
