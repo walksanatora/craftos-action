@@ -46,8 +46,8 @@ RUN pacman -U * --noconfirm
 
 #install the files
 COPY main.sh /main.sh
-RUN rm -rf /usr/share/craftos
-WORKDIR /usr/share/
+RUN rm -rf /usr/local/share/craftos
+WORKDIR /usr/local/share/
 RUN wget "https://github.com/walksanatora/craftos2-rom-CI/archive/refs/heads/master.zip"
 RUN unzip "master.zip"
 RUN mv craftos2-rom-CI-master craftos

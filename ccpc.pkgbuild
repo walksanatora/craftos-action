@@ -9,7 +9,7 @@ arch=('x86_64' 'i386' 'armv7l' 'aarch64')
 url="https://github.com/MCJack123/craftos2"
 license=('MIT')
 groups=()
-depends=('craftos-pc-data-git' 'sdl2>=2.0.8' 'poco')
+depends=('sdl2>=2.0.8' 'poco')
 makedepends=('patchelf')
 optdepends=('libharu: PDF output support' 'sdl2_mixer: audio' 'png++: PNG screenshot support' 'ncurses: CLI mode support' 'libwebp: WebP screenshot/recording support')
 checkdepends=()
