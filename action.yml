@@ -3,14 +3,13 @@ description: "Runs a CraftOS computer as a Headless CI"
 inputs:
   root:
     description: "root of the computers relative to repository root"
-    required: false
-    default: "."
+    required: true
   timeout:
     description: "maximum ammount of time in seconds for CraftOS to run before erroring"
-    required: true
+    required: false
     default: "60"
   args: 
-    description: "string to pass into the --args of CraftOS"
+    description: "string to pass into the --args of CraftOS, todo: modify rom to pass args"
     required: false
     default: ""
 runs:
