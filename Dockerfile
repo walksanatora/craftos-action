@@ -48,4 +48,4 @@ RUN pacman -U * --noconfirm
 COPY main.sh /main.sh
 RUN rm -rf /usr/share/craftos
 COPY craftos2-rom-CI /usr/share/craftos
-ENTRYPOINT ["bash","-c","/main.sh"]
+ENTRYPOINT ["/main.sh"]

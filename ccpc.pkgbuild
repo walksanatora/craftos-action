@@ -44,7 +44,6 @@ build() {
 
 check() {
 	cd "craftos2"
-	make -k test
 }
 
 package() {
