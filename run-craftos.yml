@@ -1,5 +1,5 @@
 name: "Run Craftos"
-description: "Runs a CraftOS computer"
+description: "Runs a CraftOS computer as a Headless CI"
 inputs:
   root:
     description: "root of the computers relative to repository root"
